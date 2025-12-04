@@ -1,9 +1,9 @@
 diff --git a/styles.css b/styles.css
 new file mode 100644
-index 0000000000000000000000000000000000000000..6e32a118201ef75ef1bb134fd66eaf576cb98c18
+index 0000000000000000000000000000000000000000..51240d429e0a3975d0e8dee776d8370be8d75d83
 --- /dev/null
 +++ b/styles.css
-@@ -0,0 +1,235 @@
+@@ -0,0 +1,311 @@
 +:root {
 +  --bg: #0c1427;
 +  --card: #0f1b32;
@@ -38,6 +38,7 @@ index 0000000000000000000000000000000000000000..6e32a118201ef75ef1bb134fd66eaf57
 +  align-items: center;
 +  padding: 40px clamp(16px, 4vw, 64px);
 +  gap: 24px;
++  flex-wrap: wrap;
 +}
 +
 +.page-header h1 {
@@ -84,6 +85,81 @@ index 0000000000000000000000000000000000000000..6e32a118201ef75ef1bb134fd66eaf57
 +  inset: 0;
 +  opacity: 0;
 +  cursor: pointer;
++}
++
++.ingest-controls {
++  display: flex;
++  flex-direction: column;
++  gap: 10px;
++  align-items: stretch;
++  min-width: 320px;
++}
++
++.remote-loader {
++  display: grid;
++  grid-template-columns: 1fr auto;
++  gap: 8px;
++}
++
++.remote-loader input {
++  background: #0c162b;
++  border: 1px solid var(--border);
++  color: var(--text);
++  padding: 12px;
++  border-radius: 10px;
++  font-size: 15px;
++}
++
++.refresh-row {
++  display: flex;
++  align-items: center;
++  flex-wrap: wrap;
++  gap: 10px;
++}
++
++.ghost {
++  background: transparent;
++  border: 1px solid var(--border);
++  color: var(--text);
++}
++
++.toggle {
++  display: inline-flex;
++  align-items: center;
++  gap: 6px;
++  color: var(--muted);
++}
++
++.interval {
++  display: inline-flex;
++  align-items: center;
++  gap: 6px;
++  color: var(--muted);
++}
++
++.interval input {
++  width: 80px;
++  background: #0c162b;
++  border: 1px solid var(--border);
++  color: var(--text);
++  padding: 8px;
++  border-radius: 10px;
++}
++
++.muted {
++  color: var(--muted);
++}
++
++.visually-hidden {
++  position: absolute;
++  width: 1px;
++  height: 1px;
++  padding: 0;
++  margin: -1px;
++  overflow: hidden;
++  clip: rect(0, 0, 0, 0);
++  white-space: nowrap;
++  border: 0;
 +}
 +
 +.layout {
