@@ -1,0 +1,222 @@
+diff --git a/scripts.js b/scripts.js
+new file mode 100644
+index 0000000000000000000000000000000000000000..16d80047eafcd182511da85c267e287541ac3979
+--- /dev/null
++++ b/scripts.js
+@@ -0,0 +1,216 @@
++let workbook;
++let activeData = [];
++let chartInstance;
++
++const fileInput = document.getElementById('fileInput');
++const sheetSelect = document.getElementById('sheetSelect');
++const chartTypeSelect = document.getElementById('chartType');
++const xFieldSelect = document.getElementById('xField');
++const yFieldSelect = document.getElementById('yField');
++const refreshChartButton = document.getElementById('refreshChart');
++const dataTable = document.getElementById('dataTable');
++const fileNameEl = document.getElementById('fileName');
++const sheetCountEl = document.getElementById('sheetCount');
++const rowCountEl = document.getElementById('rowCount');
++const columnCountEl = document.getElementById('columnCount');
++
++fileInput.addEventListener('change', handleFileSelect);
++sheetSelect.addEventListener('change', () => loadSheet(sheetSelect.value));
++chartTypeSelect.addEventListener('change', renderChart);
++xFieldSelect.addEventListener('change', renderChart);
++yFieldSelect.addEventListener('change', renderChart);
++refreshChartButton.addEventListener('click', renderChart);
++
++function handleFileSelect(event) {
++  const [file] = event.target.files;
++  if (!file) return;
++
++  const reader = new FileReader();
++  reader.onload = (e) => {
++    const data = new Uint8Array(e.target.result);
++    workbook = XLSX.read(data, { type: 'array' });
++    populateSheetPicker(file.name);
++  };
++  reader.readAsArrayBuffer(file);
++}
++
++function populateSheetPicker(fileName) {
++  const sheetNames = workbook.SheetNames || [];
++  sheetSelect.innerHTML = '';
++
++  sheetNames.forEach((name) => {
++    const option = document.createElement('option');
++    option.value = name;
++    option.textContent = name;
++    sheetSelect.appendChild(option);
++  });
++
++  sheetSelect.disabled = sheetNames.length === 0;
++  chartTypeSelect.disabled = sheetNames.length === 0;
++
++  fileNameEl.textContent = fileName || '—';
++  sheetCountEl.textContent = sheetNames.length;
++
++  if (sheetNames.length) {
++    loadSheet(sheetNames[0]);
++  } else {
++    clearPreview();
++  }
++}
++
++function loadSheet(sheetName) {
++  const worksheet = workbook.Sheets[sheetName];
++  const rows = XLSX.utils.sheet_to_json(worksheet, { defval: '' });
++  activeData = rows;
++
++  const columns = Object.keys(rows[0] || {});
++  updateSummary(rows, columns);
++  populateFieldSelectors(columns);
++  renderPreview(rows, columns);
++  renderChart();
++}
++
++function updateSummary(rows, columns) {
++  rowCountEl.textContent = rows.length;
++  columnCountEl.textContent = columns.length;
++}
++
++function populateFieldSelectors(columns) {
++  [xFieldSelect, yFieldSelect].forEach((select) => {
++    select.innerHTML = '';
++    columns.forEach((col) => {
++      const option = document.createElement('option');
++      option.value = col;
++      option.textContent = col;
++      select.appendChild(option);
++    });
++    select.disabled = !columns.length;
++  });
++
++  chartTypeSelect.disabled = !columns.length;
++  refreshChartButton.disabled = !columns.length;
++}
++
++function renderPreview(rows, columns) {
++  dataTable.innerHTML = '';
++  if (!rows.length) {
++    dataTable.innerHTML = '<caption>No rows found in this sheet.</caption>';
++    return;
++  }
++
++  const thead = document.createElement('thead');
++  const headerRow = document.createElement('tr');
++  columns.forEach((col) => {
++    const th = document.createElement('th');
++    th.textContent = col;
++    headerRow.appendChild(th);
++  });
++  thead.appendChild(headerRow);
++
++  const tbody = document.createElement('tbody');
++  rows.slice(0, 50).forEach((row) => {
++    const tr = document.createElement('tr');
++    columns.forEach((col) => {
++      const td = document.createElement('td');
++      td.textContent = row[col];
++      tr.appendChild(td);
++    });
++    tbody.appendChild(tr);
++  });
++
++  dataTable.appendChild(thead);
++  dataTable.appendChild(tbody);
++}
++
++function renderChart() {
++  if (!activeData.length) return;
++  const xField = xFieldSelect.value;
++  const yField = yFieldSelect.value;
++  const chartType = chartTypeSelect.value;
++
++  if (!xField || !yField) return;
++
++  const { labels, values } = buildSeries(activeData, xField, yField, chartType);
++
++  const ctx = document.getElementById('dataChart').getContext('2d');
++  const palette = [
++    '#4f9cff', '#8ff2ff', '#ffc773', '#7cf29c', '#e384ff', '#ff9fb2',
++    '#b5f1ff', '#ffd166', '#a29bfe', '#8be9fd'
++  ];
++
++  if (chartInstance) chartInstance.destroy();
++
++  chartInstance = new Chart(ctx, {
++    type: chartType === 'pie' ? 'pie' : chartType,
++    data: {
++      labels,
++      datasets: [{
++        label: `${yField} by ${xField}`,
++        data: values,
++        backgroundColor: chartType === 'pie' ? palette : 'rgba(79, 156, 255, 0.5)',
++        borderColor: chartType === 'pie' ? palette : '#4f9cff',
++        borderWidth: 1.5,
++        tension: 0.3,
++        fill: chartType === 'line',
++      }]
++    },
++    options: {
++      responsive: true,
++      plugins: {
++        legend: { display: chartType === 'pie' },
++        tooltip: { enabled: true },
++      },
++      scales: chartType === 'pie' ? {} : {
++        y: { beginAtZero: true }
++      }
++    }
++  });
++}
++
++function buildSeries(rows, xField, yField, chartType) {
++  const labels = [];
++  const values = [];
++
++  if (chartType === 'pie') {
++    const aggregates = new Map();
++    rows.forEach((row) => {
++      const xVal = stringifyValue(row[xField]);
++      const yVal = Number(row[yField]);
++      if (Number.isFinite(yVal)) {
++        aggregates.set(xVal, (aggregates.get(xVal) || 0) + yVal);
++      }
++    });
++    for (const [label, total] of aggregates.entries()) {
++      labels.push(label);
++      values.push(total);
++    }
++    return { labels, values };
++  }
++
++  rows.forEach((row) => {
++    const yVal = Number(row[yField]);
++    if (!Number.isFinite(yVal)) return;
++    labels.push(stringifyValue(row[xField]));
++    values.push(yVal);
++  });
++
++  return { labels, values };
++}
++
++function stringifyValue(value) {
++  if (value === undefined || value === null) return '';
++  if (value instanceof Date) return value.toISOString().slice(0, 10);
++  return String(value);
++}
++
++function clearPreview() {
++  dataTable.innerHTML = '';
++  fileNameEl.textContent = '—';
++  sheetCountEl.textContent = '0';
++  rowCountEl.textContent = '0';
++  columnCountEl.textContent = '0';
++  [sheetSelect, chartTypeSelect, xFieldSelect, yFieldSelect, refreshChartButton].forEach((el) => {
++    el.disabled = true;
++    el.innerHTML = '';
++  });
++}
