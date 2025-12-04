@@ -1,0 +1,106 @@
+diff --git a/index.html b/index.html
+new file mode 100644
+index 0000000000000000000000000000000000000000..e3ddabb948b03bf175e78854123ce24100a37c80
+--- /dev/null
++++ b/index.html
+@@ -0,0 +1,99 @@
++<!doctype html>
++<html lang="en">
++<head>
++  <meta charset="UTF-8">
++  <meta name="viewport" content="width=device-width, initial-scale=1.0">
++  <title>Excel Data Visualizer</title>
++  <link rel="stylesheet" href="styles.css">
++  <link rel="preconnect" href="https://fonts.googleapis.com">
++  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
++  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
++  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
++  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
++</head>
++<body>
++  <header class="page-header">
++    <div>
++      <p class="eyebrow">Interactive Dashboard</p>
++      <h1>IES Excel Visualizer</h1>
++      <p class="lede">Upload an Excel workbook exported from your Microsoft Forms responses and instantly explore the data each semester.</p>
++    </div>
++    <label class="file-button">
++      <input id="fileInput" type="file" accept=".xlsx,.xls,.xlsm" />
++      <span>Upload Excel file</span>
++    </label>
++  </header>
++
++  <main class="layout">
++    <section class="card" id="fileSummary" aria-live="polite">
++      <h2>Workbook overview</h2>
++      <dl class="stats">
++        <div>
++          <dt>File name</dt>
++          <dd id="fileName">—</dd>
++        </div>
++        <div>
++          <dt>Sheets detected</dt>
++          <dd id="sheetCount">0</dd>
++        </div>
++        <div>
++          <dt>Rows loaded</dt>
++          <dd id="rowCount">0</dd>
++        </div>
++        <div>
++          <dt>Columns</dt>
++          <dd id="columnCount">0</dd>
++        </div>
++      </dl>
++      <div class="sheet-picker">
++        <label for="sheetSelect">Sheet</label>
++        <select id="sheetSelect" disabled></select>
++      </div>
++    </section>
++
++    <section class="card">
++      <div class="card-header">
++        <h2>Build a chart</h2>
++        <div class="chart-controls">
++          <label>
++            <span>Chart type</span>
++            <select id="chartType" disabled>
++              <option value="bar">Bar</option>
++              <option value="line">Line</option>
++              <option value="pie">Pie</option>
++            </select>
++          </label>
++          <label>
++            <span>X field</span>
++            <select id="xField" disabled></select>
++          </label>
++          <label>
++            <span>Y field</span>
++            <select id="yField" disabled></select>
++          </label>
++          <button id="refreshChart" class="primary" disabled>Update chart</button>
++        </div>
++      </div>
++      <div class="chart-wrapper">
++        <canvas id="dataChart" aria-label="Chart visualizing Excel data"></canvas>
++      </div>
++    </section>
++
++    <section class="card">
++      <div class="card-header">
++        <h2>Preview</h2>
++        <p class="subhead">First 50 rows from the selected sheet</p>
++      </div>
++      <div class="table-wrapper">
++        <table id="dataTable" aria-live="polite"></table>
++      </div>
++    </section>
++  </main>
++
++  <footer class="page-footer">
++    <p>Drop in the latest Excel export each semester, pick your sheet, and build charts instantly. No code changes required.</p>
++  </footer>
++
++  <script src="scripts.js"></script>
++</body>
++</html>
+
