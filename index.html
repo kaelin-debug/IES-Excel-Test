@@ -1,9 +1,9 @@
 diff --git a/index.html b/index.html
 new file mode 100644
-index 0000000000000000000000000000000000000000..e3ddabb948b03bf175e78854123ce24100a37c80
+index 0000000000000000000000000000000000000000..8bc440d7717ab187dce0a92faa091f91d4079ca0
 --- /dev/null
 +++ b/index.html
-@@ -0,0 +1,99 @@
+@@ -0,0 +1,134 @@
 +<!doctype html>
 +<html lang="en">
 +<head>
@@ -22,12 +22,32 @@ index 0000000000000000000000000000000000000000..e3ddabb948b03bf175e78854123ce241
 +    <div>
 +      <p class="eyebrow">Interactive Dashboard</p>
 +      <h1>IES Excel Visualizer</h1>
-+      <p class="lede">Upload an Excel workbook exported from your Microsoft Forms responses and instantly explore the data each semester.</p>
++      <p class="lede">Connect directly to your SharePoint-hosted Microsoft Forms workbook to keep charts fresh as new responses arrive.</p>
 +    </div>
-+    <label class="file-button">
-+      <input id="fileInput" type="file" accept=".xlsx,.xls,.xlsm" />
-+      <span>Upload Excel file</span>
-+    </label>
++    <div class="ingest-controls">
++      <label class="file-button">
++        <input id="fileInput" type="file" accept=".xlsx,.xls,.xlsm" />
++        <span>Upload Excel file</span>
++      </label>
++      <div class="remote-loader">
++        <label for="sharepointUrl" class="visually-hidden">SharePoint Excel link</label>
++        <input id="sharepointUrl" type="url" placeholder="Paste SharePoint Excel link with ?download=1" />
++        <button id="loadFromLink" class="primary">Load from link</button>
++      </div>
++      <div class="refresh-row">
++        <button id="manualRefresh" class="ghost" disabled>Refresh now</button>
++        <label class="toggle">
++          <input id="autoRefresh" type="checkbox" />
++          <span>Auto-refresh</span>
++        </label>
++        <label class="interval">
++          <span>Every</span>
++          <input id="refreshInterval" type="number" min="10" value="60" />
++          <span>seconds</span>
++        </label>
++        <span id="refreshStatus" class="muted">Waiting for source…</span>
++      </div>
++    </div>
 +  </header>
 +
 +  <main class="layout">
@@ -74,8 +94,23 @@ index 0000000000000000000000000000000000000000..e3ddabb948b03bf175e78854123ce241
 +            <select id="xField" disabled></select>
 +          </label>
 +          <label>
-+            <span>Y field</span>
++            <span>Y field (numeric)</span>
 +            <select id="yField" disabled></select>
++          </label>
++          <label>
++            <span>Aggregation</span>
++            <select id="aggregation" disabled>
++              <option value="count">Count responses</option>
++              <option value="sum">Sum Y field</option>
++            </select>
++          </label>
++          <label>
++            <span>Student column</span>
++            <select id="studentColumn" disabled></select>
++          </label>
++          <label>
++            <span>Filter by student</span>
++            <select id="studentFilter" disabled></select>
 +          </label>
 +          <button id="refreshChart" class="primary" disabled>Update chart</button>
 +        </div>
