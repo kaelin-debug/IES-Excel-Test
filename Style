@@ -1,0 +1,241 @@
+diff --git a/styles.css b/styles.css
+new file mode 100644
+index 0000000000000000000000000000000000000000..6e32a118201ef75ef1bb134fd66eaf576cb98c18
+--- /dev/null
++++ b/styles.css
+@@ -0,0 +1,235 @@
++:root {
++  --bg: #0c1427;
++  --card: #0f1b32;
++  --muted: #99a4c2;
++  --text: #f4f6fb;
++  --accent: #4f9cff;
++  --accent-2: #8ff2ff;
++  --border: #223155;
++}
++
++* {
++  box-sizing: border-box;
++}
++
++body {
++  margin: 0;
++  font-family: 'Inter', system-ui, -apple-system, sans-serif;
++  background: radial-gradient(circle at 20% 20%, rgba(79, 156, 255, 0.08), transparent 20%),
++    radial-gradient(circle at 80% 0%, rgba(143, 242, 255, 0.08), transparent 25%),
++    var(--bg);
++  color: var(--text);
++  min-height: 100vh;
++}
++
++a {
++  color: var(--accent);
++}
++
++.page-header {
++  display: flex;
++  justify-content: space-between;
++  align-items: center;
++  padding: 40px clamp(16px, 4vw, 64px);
++  gap: 24px;
++}
++
++.page-header h1 {
++  margin: 8px 0;
++  font-size: clamp(28px, 5vw, 40px);
++}
++
++.lede {
++  margin: 0;
++  color: var(--muted);
++  max-width: 720px;
++  line-height: 1.6;
++}
++
++.eyebrow {
++  text-transform: uppercase;
++  letter-spacing: 0.08em;
++  font-weight: 700;
++  color: var(--accent-2);
++  margin: 0;
++}
++
++.file-button {
++  position: relative;
++  display: inline-flex;
++  align-items: center;
++  background: linear-gradient(120deg, var(--accent), var(--accent-2));
++  color: #041025;
++  padding: 14px 18px;
++  border-radius: 12px;
++  font-weight: 700;
++  cursor: pointer;
++  transition: transform 120ms ease, box-shadow 120ms ease;
++  box-shadow: 0 10px 40px rgba(79, 156, 255, 0.35);
++}
++
++.file-button:hover {
++  transform: translateY(-1px);
++  box-shadow: 0 10px 40px rgba(79, 156, 255, 0.5);
++}
++
++.file-button input {
++  position: absolute;
++  inset: 0;
++  opacity: 0;
++  cursor: pointer;
++}
++
++.layout {
++  display: grid;
++  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
++  gap: 20px;
++  padding: 0 clamp(16px, 4vw, 64px) 48px;
++}
++
++.card {
++  background: var(--card);
++  border: 1px solid var(--border);
++  border-radius: 16px;
++  padding: 18px;
++  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
++}
++
++.card-header {
++  display: flex;
++  justify-content: space-between;
++  align-items: center;
++  gap: 12px;
++  margin-bottom: 12px;
++}
++
++.card h2 {
++  margin: 0;
++}
++
++.subhead {
++  margin: 0;
++  color: var(--muted);
++}
++
++.stats {
++  display: grid;
++  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
++  gap: 12px;
++  margin: 12px 0 16px;
++}
++
++.stats dt {
++  font-size: 13px;
++  color: var(--muted);
++  text-transform: uppercase;
++  letter-spacing: 0.08em;
++  margin-bottom: 4px;
++}
++
++.stats dd {
++  margin: 0;
++  font-size: 18px;
++  font-weight: 700;
++}
++
++.sheet-picker label {
++  display: block;
++  color: var(--muted);
++  margin-bottom: 4px;
++}
++
++select, button {
++  background: #0c162b;
++  border: 1px solid var(--border);
++  color: var(--text);
++  padding: 10px 12px;
++  border-radius: 10px;
++  font-size: 15px;
++}
++
++select:disabled, button:disabled {
++  opacity: 0.5;
++  cursor: not-allowed;
++}
++
++.chart-controls {
++  display: grid;
++  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
++  gap: 10px;
++  align-items: end;
++}
++
++.chart-controls span {
++  display: block;
++  font-size: 13px;
++  color: var(--muted);
++  margin-bottom: 4px;
++}
++
++.primary {
++  background: linear-gradient(120deg, var(--accent), var(--accent-2));
++  color: #041025;
++  font-weight: 700;
++  border: none;
++  cursor: pointer;
++  box-shadow: 0 10px 30px rgba(79, 156, 255, 0.3);
++  transition: transform 120ms ease;
++}
++
++.primary:hover {
++  transform: translateY(-1px);
++}
++
++.chart-wrapper {
++  min-height: 320px;
++}
++
++.table-wrapper {
++  border: 1px solid var(--border);
++  border-radius: 10px;
++  overflow: auto;
++  max-height: 420px;
++}
++
++table {
++  width: 100%;
++  border-collapse: collapse;
++  color: var(--text);
++  font-size: 14px;
++}
++
++table thead {
++  background: #0c162b;
++  position: sticky;
++  top: 0;
++  z-index: 1;
++}
++
++table th, table td {
++  padding: 10px 12px;
++  border-bottom: 1px solid var(--border);
++  white-space: nowrap;
++}
++
++table tr:nth-child(every) { /* placeholder to keep style consistent */ }
++
++table tbody tr:nth-child(odd) {
++  background: rgba(255, 255, 255, 0.02);
++}
++
++.page-footer {
++  padding: 18px clamp(16px, 4vw, 64px) 40px;
++  color: var(--muted);
++}
++
++@media (max-width: 720px) {
++  .page-header {
++    flex-direction: column;
++    align-items: flex-start;
++  }
++
++  .chart-controls {
++    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
++  }
++}
